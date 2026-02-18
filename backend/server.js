@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const cookieParser = require('cookie-parser');
 const discountRoutes = require('./routes/discountRoutes');
+const { initializeTelegramBot } = require('./services/telegramBot');
 
 // Load environment variables
 dotenv.config();
@@ -14,7 +15,7 @@ const app = express();
 
 // CORS configuration
 app.use(cors({
-    origin: ['http://localhost:3000', 'http://localhost:3001', 'http://127.0.0.1:3000'],
+    origin: ['http://localhost:3000', 'http://localhost:3001', 'http://127.0.0.1:3000','https://al-shafi-i-foundation.onrender.com'],
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization']
@@ -31,8 +32,11 @@ mongoose.connect(process.env.MONGODB_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
 })
-.then(() => console.log('✅ MongoDB connected successfully'))
-.catch(err => console.error('❌ MongoDB connection error:', err));
+    .then(() => {
+        console.log('✅ MongoDB connected successfully');
+        initializeTelegramBot();
+    })
+    .catch(err => console.error('❌ MongoDB connection error:', err));
 
 // ============ ROUTES ============
 
@@ -43,10 +47,10 @@ const analyticsRoutes = require('./routes/analyticsRoutes');
 
 // Register routes with correct paths
 app.use('/api/auth', authRoutes);      // For auth endpoints: /api/auth/login, /api/auth/register
-app.use('/api', productRoutes);   
-app.use('/api/discounts', discountRoutes); 
-app.use('/api/analytics', analyticsRoutes); 
-   // For product endpoints: /api/products, /api/admin/products
+app.use('/api', productRoutes);
+app.use('/api/discounts', discountRoutes);
+app.use('/api/analytics', analyticsRoutes);
+// For product endpoints: /api/products, /api/admin/products
 
 // Optional: User routes if you have them
 // app.use('/api/users', userRoutes);
