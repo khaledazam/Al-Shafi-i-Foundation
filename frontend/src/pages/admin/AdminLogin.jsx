@@ -111,7 +111,7 @@ const AdminLogin = () => {
                     </form>
 
                     {/* Demo Credentials */}
-                    <div className="mt-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+                    {/* <div className="mt-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
                         <p className="text-sm font-semibold text-blue-900 dark:text-blue-300 mb-2">
                             Demo Credentials:
                         </p>
@@ -119,7 +119,7 @@ const AdminLogin = () => {
                             Email: admin@alshafii.com<br />
                             Password: admin123456
                         </p>
-                    </div>
+                    </div> */}
                 </div>
             </div>
         </div>

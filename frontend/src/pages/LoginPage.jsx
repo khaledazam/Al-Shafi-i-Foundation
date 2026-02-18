@@ -131,13 +131,13 @@ const LoginPage = () => {
                 </div>
 
                 {/* Demo Credentials */}
-                <div className="mt-8 text-center p-6 rounded-3xl bg-blue-500/5 border border-blue-500/10 backdrop-blur-sm">
+                {/* <div className="mt-8 text-center p-6 rounded-3xl bg-blue-500/5 border border-blue-500/10 backdrop-blur-sm">
                     <p className="text-[10px] font-black uppercase tracking-[0.2em] text-blue-500 mb-2">Demo Credentials</p>
                     <div className="flex justify-center gap-6 text-sm">
                         <p className="text-gray-400">Email: <span className="text-white font-bold">admin@example.com</span></p>
                         <p className="text-gray-400">Pass: <span className="text-white font-bold">admin123</span></p>
                     </div>
-                </div>
+                </div> */}
 
                 <p className="mt-8 text-center text-gray-500 text-sm">
                     Don't have an account? <a href="/signup" className="text-white font-bold hover:underline">Contact System Admin</a>

@@ -126,13 +126,17 @@ const HeroSection = () => {
             استكشف مجموعتنا
           </motion.button>
 
-          <motion.button
-            whileHover={{ scale: 1.05, borderColor: "#fbbf24" }}
-            whileTap={{ scale: 0.98 }}
-            className="px-12 py-5 border-2 border-amber-400 text-amber-300 font-bold text-lg rounded-full backdrop-blur-sm transition-all hover:bg-amber-900/30"
-          >
-            تواصل معنا الآن
-          </motion.button>
+          <motion.a
+  href="https://t.me/AlShafii98Bot?start=website"
+  target="_blank"
+  rel="noopener noreferrer"
+  whileHover={{ scale: 1.05, borderColor: "#fbbf24" }}
+  whileTap={{ scale: 0.98 }}
+  className="px-12 py-5 border-2 border-amber-400 text-amber-300 font-bold text-lg rounded-full backdrop-blur-sm transition-all hover:bg-amber-900/30 inline-block text-center"
+>
+  تواصل معنا الآن
+</motion.a>
+
         </motion.div>
       </motion.div>
 
