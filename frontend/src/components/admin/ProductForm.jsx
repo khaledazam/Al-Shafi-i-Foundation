@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { FaTimes, FaPalette } from 'react-icons/fa';
+import api from '../../utils/api';
 
 const ProductForm = ({ isOpen, onClose, onSubmit, initialData }) => {
     const [formData, setFormData] = useState({
@@ -86,20 +87,13 @@ const ProductForm = ({ isOpen, onClose, onSubmit, initialData }) => {
 
     const handleFormSubmit = async (e) => {
         e.preventDefault();
-        
+
         try {
             setError(null);
             setLoading(true);
 
             if (!formData.name.en || !formData.hexCode || !formData.category) {
                 setError('Please fill in required fields');
-                setLoading(false);
-                return;
-            }
-
-            const token = localStorage.getItem('authToken');
-            if (!token) {
-                setError('Not authenticated');
                 setLoading(false);
                 return;
             }
@@ -120,41 +114,30 @@ const ProductForm = ({ isOpen, onClose, onSubmit, initialData }) => {
 
             console.log('📤 Submitting...');
 
-            const url = initialData 
-                ? `http://localhost:5000/api/products/${initialData._id}`
-                : 'http://localhost:5000/api/products';
-
-            const method = initialData ? 'PUT' : 'POST';
-
-            const response = await fetch(url, {
-                method: method,
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                },
-                body: data
-            });
-
-            console.log('Response status:', response.status);
-
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.error || 'Failed to save product');
+            let response;
+            if (initialData) {
+                response = await api.put(`/products/${initialData._id}`, data, {
+                    headers: { 'Content-Type': 'multipart/form-data' }
+                });
+            } else {
+                response = await api.post('/products', data, {
+                    headers: { 'Content-Type': 'multipart/form-data' }
+                });
             }
 
-            const result = await response.json();
-            console.log('✅ Success:', result);
+            console.log('✅ Success:', response.data);
 
             resetForm();
             onClose();
-            
-            // Wait a moment then call onSubmit
-            setTimeout(() => {
-                onSubmit(data);
-            }, 500);
+
+            // Notify parent
+            if (onSubmit) {
+                onSubmit(response.data.data);
+            }
 
         } catch (err) {
             console.error('❌ Error:', err);
-            setError(err.message || 'Failed to save product. Check console for details.');
+            setError(err.response?.data?.error || err.message || 'Failed to save product');
         } finally {
             setLoading(false);
         }
@@ -170,7 +153,7 @@ const ProductForm = ({ isOpen, onClose, onSubmit, initialData }) => {
                         <h2 className="text-2xl font-bold text-navy-900 dark:text-white">
                             {initialData ? 'Edit Product' : 'Add Product'}
                         </h2>
-                        <button 
+                        <button
                             onClick={onClose}
                             className="p-2 hover:bg-gray-100 dark:hover:bg-navy-800 rounded-full"
                         >
@@ -198,10 +181,10 @@ const ProductForm = ({ isOpen, onClose, onSubmit, initialData }) => {
                                         </div>
                                     )}
                                 </div>
-                                <input 
-                                    type="file" 
-                                    className="hidden" 
-                                    onChange={handleFileChange} 
+                                <input
+                                    type="file"
+                                    className="hidden"
+                                    onChange={handleFileChange}
                                     accept="image/*"
                                 />
                             </label>
@@ -306,14 +289,14 @@ const ProductForm = ({ isOpen, onClose, onSubmit, initialData }) => {
 
                         {/* Buttons */}
                         <div className="flex gap-4 pt-4">
-                            <button 
+                            <button
                                 type="submit"
                                 disabled={loading}
                                 className="flex-1 py-3 bg-blue-600 text-white rounded-lg font-bold hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
                             >
                                 {loading ? 'Saving...' : (initialData ? 'Update' : 'Create')}
                             </button>
-                            <button 
+                            <button
                                 type="button"
                                 onClick={onClose}
                                 disabled={loading}

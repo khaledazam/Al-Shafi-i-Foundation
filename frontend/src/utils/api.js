@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-    baseURL: '/api',
+    baseURL: import.meta.env.VITE_API_URL + '/api',
     withCredentials: true, // Important for HttpOnly cookies
 });
 
@@ -36,7 +36,6 @@ api.interceptors.response.use(
                 window.location.href = '/login';
             }
         }
-        return Promise.reject(error);
         return Promise.reject(error);
     }
 );

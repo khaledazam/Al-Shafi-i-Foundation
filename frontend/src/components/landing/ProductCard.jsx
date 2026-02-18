@@ -2,7 +2,7 @@ import React, { memo, useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { FaShoppingCart, FaStar, FaEye, FaSwatchbook, FaTag } from 'react-icons/fa';
 import { useLanguage } from '../../context/LanguageContext';
-import axios from 'axios';
+import api from '../../utils/api';
 
 const ProductCard = memo(({ product }) => {
     const { language, t } = useLanguage();
@@ -19,17 +19,17 @@ const ProductCard = memo(({ product }) => {
     useEffect(() => {
         const fetchDiscount = async () => {
             try {
-                const response = await axios.get('http://localhost:5000/api/discounts');
-                
+                const response = await api.get('/discounts');
+
                 if (response.data?.success && response.data?.data) {
                     // Find discount for this product
-                    const productDiscount = response.data.data.find(d => 
-                        d.productId?._id === product._id && 
+                    const productDiscount = response.data.data.find(d =>
+                        d.productId?._id === product._id &&
                         d.isActive &&
                         new Date(d.startDate) <= new Date() &&
                         new Date(d.endDate) >= new Date()
                     );
-                    
+
                     setDiscount(productDiscount || null);
                 }
             } catch (error) {
@@ -47,7 +47,7 @@ const ProductCard = memo(({ product }) => {
 
     // Calculate discounted price
     const originalPrice = product?.price || 0;
-    const discountedPrice = discount 
+    const discountedPrice = discount
         ? originalPrice * (1 - discount.discountPercent / 100)
         : originalPrice;
 
@@ -97,7 +97,7 @@ const ProductCard = memo(({ product }) => {
                         }`}>
                         {t(product?.category === 'Paint' ? 'طلاء' : product?.category === 'Wallpaper' ? 'ورق حائط' : 'ديكور', product?.category)}
                     </span>
-                    
+
                     {/* Discount Badge */}
                     {!loading && discount && (
                         <motion.span
@@ -109,7 +109,7 @@ const ProductCard = memo(({ product }) => {
                             {discount.discountPercent}% {t('خصم', 'off')}
                         </motion.span>
                     )}
-                    
+
                     {!inStock && (
                         <span className="px-4 py-2 rounded-xl bg-red-500 text-white text-[10px] font-black uppercase tracking-widest shadow-lg">
                             {t('نفدت الكمية', 'Sold Out')}
@@ -147,7 +147,7 @@ const ProductCard = memo(({ product }) => {
                         <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">
                             {t('السعر', 'Price')}
                         </p>
-                        
+
                         {discount ? (
                             <div className="flex items-center gap-2">
                                 {/* Original Price (Strikethrough) */}
@@ -160,9 +160,9 @@ const ProductCard = memo(({ product }) => {
                                     animate={{ scale: 1 }}
                                     className="text-2xl font-black text-red-500 tracking-tight"
                                 >
-                                ج.م{discountedPrice.toLocaleString(undefined, { 
-                                        minimumFractionDigits: 2, 
-                                        maximumFractionDigits: 2 
+                                    ج.م{discountedPrice.toLocaleString(undefined, {
+                                        minimumFractionDigits: 2,
+                                        maximumFractionDigits: 2
                                     })}
                                 </motion.p>
                             </div>
